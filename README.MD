@@ -64,3 +64,4 @@ The result image will be saved in the `outputs/` directory.
 |      Name      | Link                                                         |
 | :------------: | ------------------------------------------------------------ |
 | SCRFD_10G_KPS(640*640)  | [download](https://pan.baidu.com/s/1q_8lIRjos7PrGjauE1lKpg?pwd=qmhm) 提取码:qmhm |
+| SCRFD_34G(640*640)  | [download](https://pan.baidu.com/s/1d7mAx7dddGRWjjpA_e7DIg?pwd=s8un) 提取码:s8un |
