@@ -304,44 +304,75 @@ def get_scrfd(name, download=False, root='~/.insightface/models', **kwargs):
 def scrfd_2p5gkps(**kwargs):
     return get_scrfd("2p5gkps", download=True, **kwargs)
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='scrfd demo')
-    parser.add_argument('model_file', help='model file path of onnx')
-    parser.add_argument('--input-img', type=str, help='Images for input')
-    args = parser.parse_args()
-    return args
-
-
+def add_files_in_folder_to_list(folder_path, imgs_path):
+    for root, _, files in os.walk(folder_path):
+        for file in sorted(files):
+            file_path = os.path.join(root, file)
+            imgs_path.append(file_path)   
+            
+            
 if __name__ == '__main__':
     import glob
-    #detector = SCRFD(model_file='./det.onnx')
-    args = parse_args()
-    detector = SCRFD(model_file=args.model_file)
+    import json
+    detector = SCRFD(model_file='onnx/scrfd_10g_bnkps.onnx')
     detector.prepare(-1)
-    img_paths = [args.input_img]
-    for img_path in img_paths:
-        img = cv2.imread(img_path)
 
-        for _ in range(100):
-            ta = datetime.datetime.now()
-            bboxes, kpss = detector.detect(img, 0.5, input_size = (640, 640))
-            # bboxes, kpss = detector.detect(img, 0.5)
-            tb = datetime.datetime.now()
-            print('all cost:', (tb-ta).total_seconds()*1000)
-        print(img_path, bboxes.shape)
-        if kpss is not None:
-            print(kpss.shape)
-        for i in range(bboxes.shape[0]):
-            bbox = bboxes[i]
-            x1,y1,x2,y2,score = bbox.astype(np.int16)
-            cv2.rectangle(img, (x1,y1)  , (x2,y2) , (255,0,0) , 2)
-            if kpss is not None:
-                kps = kpss[i]
-                for kp in kps:
-                    kp = kp.astype(np.int16)
-                    cv2.circle(img, tuple(kp) , 1, (0,0,255) , 2)
-        filename = img_path.split('/')[-1]
-        print('output:', filename)
-        os.makedirs('./outputs', exist_ok=True)
-        cv2.imwrite('./outputs/%s'%filename, img)
+    folder_path = "/mnt/data/lanxing/celeba/img_celeba"
+    output_json_path = "face_detect_json_anno/CelebA_results.json"
+    imgs_path = []
 
+    if os.path.isdir(folder_path):
+        add_files_in_folder_to_list(folder_path, imgs_path)
+    else:
+        print(f"Error: {folder_path} is not a valid directory.")
+        exit()
+        
+    results = []
+    
+    Flag_head = False
+
+    with open(output_json_path, 'w') as json_file:
+        for img_path in imgs_path:
+            if Flag_head :
+                json_file.write(',\n')
+            else:
+                json_file.write('[')
+                Flag_head = True
+
+            img_name = os.path.basename(img_path)
+            img = cv2.imread(img_path)
+
+            bboxes, kpss = detector.detect(img, 0.5, input_size=(640, 640))
+
+            img_result = {
+                "path": img_name,
+                "result": []
+            }
+
+            if bboxes is not None:
+                for i in range(bboxes.shape[0]):
+                    bbox = bboxes[i]
+                    x1, y1, x2, y2, score = bbox.astype(np.float32)  
+                    w=x2-x1
+                    h=y2-y1
+                    
+                    face_result = {
+                        f"face_{i+1}": {
+                            "score": format(score, '.4f'),  
+                            "facial_area": [format(coord, '.4f') for coord in [x1, y1, w, h]],  
+                            "landmarks": {
+                                "left_eye": [format(coord, '.4f') for coord in kpss[i][0].tolist()],
+                                "right_eye": [format(coord, '.4f') for coord in kpss[i][1].tolist()],
+                                "nose": [format(coord, '.4f') for coord in kpss[i][2].tolist()],
+                                "mouth_left": [format(coord, '.4f') for coord in kpss[i][3].tolist()],
+                                "mouth_right": [format(coord, '.4f') for coord in kpss[i][4].tolist()]
+                            }
+                        }
+                    }
+                    img_result["result"].append(face_result)
+
+            json_file.write(json.dumps(img_result, indent=4, ensure_ascii=False))
+        
+        json_file.write(']')
+        
+    print(f"Detection results saved to {output_json_path}")
