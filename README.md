@@ -111,7 +111,7 @@ We use a pure python evaluation script without Matlab.
 ```
 GPU=0
 GROUP=scrfd
-TASK=scrfd_2.5g
+TASK=scrfd_10g_bnkps
 CUDA_VISIBLE_DEVICES="$GPU" python -u tools/test_widerface.py ./configs/"$GROUP"/"$TASK".py ./work_dirs/"$TASK"/model.pth --mode 0 --out wouts
 ```
 

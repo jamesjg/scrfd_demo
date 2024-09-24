@@ -3,3 +3,7 @@ work_dirs/
 onnx/
 
 face_detect_json_anno/
+
+*.pyc
+
+*.egg-info
