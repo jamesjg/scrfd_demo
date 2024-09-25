@@ -7,3 +7,6 @@ face_detect_json_anno/
 *.pyc
 
 *.egg-info
+
+vis_samples/
+vis_219k_samples/

@@ -29,7 +29,7 @@ for split_path in split_paths:
         face_num_id = int(face_num_id) - face_num_min_threshold
 
         total_num_imgs_face[face_num_id] += len(data)
-        num_table[int(split_path.split('_')[-2])][face_num_id] = len(data)
+        num_table[int(split_path.split('_')[-2]) - 1][face_num_id] = len(data)
 
 
     #     print(json_file, len(data))

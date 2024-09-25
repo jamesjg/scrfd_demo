@@ -353,7 +353,7 @@ if __name__ == '__main__':
                 json_file.write('[')
                 Flag_head = True
 
-            img_name = os.path.join(os.path.basename(args.folder_path), os.path.basename(img_path))
+            img_name = os.path.join(os.path.basename(args.folder_path), img_path.split('/')[-2], img_path.split('/')[-1])
             try:
                 img = cv2.imread(img_path)
 
