@@ -2,7 +2,7 @@ import json
 import os
 import numpy as np
 
-dataset = 'faceCaption5M'
+dataset = 'faceCaption5M_refine'
 face_num_min_threshold = 1
 face_num_max_threshold = 20
 face_hist_nums = face_num_max_threshold - face_num_min_threshold + 1
