@@ -6,7 +6,7 @@ import cv2
 read_root = '/mnt/data/lanxing/faceCaption5M/images/images'
 write_root = '/mnt/data/lanxing/faceCaption5M/images/select_images'
 
-json_file = os.path.join('face_detect_json_anno/faceCaption5M_anno_json/faceCaption5M_refine_215k_new.json')
+json_file = os.path.join('face_detect_json_anno/faceCaption5M_anno_json/faceCaption5M_refine_216k.json')
 with open(json_file, 'r') as f:
     data = json.load(f)
 

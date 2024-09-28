@@ -33,3 +33,7 @@ python tools/facecaption5m/change_facecaption5m_filepath.py
 ```
 python tools/facecaption5m/copy_selected_imgs.py
 ```
+8.split the jsons to sub jsons, it is convenient to use multirun
+```
+python tools/facecaption5m/split_json.py
+```
